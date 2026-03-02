@@ -1,24 +1,25 @@
 #include <msp430.h>
 #include <uart.h>
 
-int main () {
-    WDTCTL = WDTPW | WDTHOLD;
+int main() {
+  WDTCTL = WDTPW | WDTHOLD;
 
-    PM5CTL0 &= ~LOCKLPM5;
+  PM5CTL0 &= ~LOCKLPM5;
 
-    SETUP_UART_PINS();
-    INITIALIZE_UART();
+  SETUP_UART_PINS();
+  INITIALIZE_UART();
 
-    // SEND_CHAR_UART('H');
-    // SEND_CHAR_UART('E');
-    // SEND_CHAR_UART('L');
-    // SEND_CHAR_UART('L');
-    // SEND_CHAR_UART('O');
+  __bis_SR_register(GIE); // enable all interrupts
 
-    unsigned char rxData;
-    while(1) {
-        if (RECEIVE_CHAR_UART(&rxData)) { 
-            SEND_CHAR_UART('5'); // Echo the character back
-        }
-    }
+  P1DIR |= BIT0;
+  P9DIR |= BIT7;
+
+  unsigned char rxData;
+  int i = 0;
+  while (1) {
+    SEND_STRING_UART("Test\n");
+    SEND_CHAR_UART('A');
+    SEND_INTEGER_UART(382245);
+    __delay_cycles(1000000);
+  }
 }
